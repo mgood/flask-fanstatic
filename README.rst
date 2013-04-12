@@ -50,9 +50,13 @@ them in your HTML::
 You can declare resource to include, by using the ``needs()`` helper to declare
 resources needed by your template::
 
-  {{ g.fanstatic.needs('js.jquery:jquery') }}
+  {{- g.fanstatic.needs('js.jquery:jquery') -}}
   {% extends 'layout.html' %}
   ...
+
+.. note:: The example above uses dashes to tell Jinja to strip the extra whitespace such
+   as the newline after the expression.  See the Jinja docs for more details:
+   http://jinja.pocoo.org/docs/templates/#whitespace-control
 
 Fanstatic will use the ``top`` and ``bottom`` helpers above to include the CSS
 or JavaScript resources ``need``-ed automatically.
