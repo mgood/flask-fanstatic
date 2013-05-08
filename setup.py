@@ -14,7 +14,7 @@ except:
 
 setup(
   name='Flask-Fanstatic',
-  version='0.1.0',
+  version='0.1.1',
   url='http://github.com/mgood/flask-fanstatic',
   license='BSD',
   author='Matt Good',
