@@ -80,7 +80,7 @@ class _FanstaticManager(object):
     else:
       prefix = None
     self.resource_sets[prefix] = fanstatic
-  
+
   def find_resource(self, name):
     if ':' in name:
       return import_string(name)
@@ -95,7 +95,7 @@ class _FanstaticManager(object):
 
   def before_request(self):
     g.fanstatic = _FanstaticContext(init_needed(
-      # TODO set base_url for this app if needed
+      script_name=request.script_root,
       **current_app.config.get('FANSTATIC_OPTIONS', {})
     ), self)
 
