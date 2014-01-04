@@ -5,6 +5,10 @@ Flask integration for the Fanstatic resource publishing system.
 
 http://www.fanstatic.org/
 
+.. image:: https://api.travis-ci.org/mgood/flask-fanstatic.png
+   :target: https://travis-ci.org/mgood/flask-fanstatic
+
+
 Overview
 --------
 
