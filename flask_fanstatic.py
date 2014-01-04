@@ -94,15 +94,18 @@ class _FanstaticManager(object):
     return self.resource_sets[blueprint].resources[resource]
 
   def before_request(self):
-    g.fanstatic = _FanstaticContext(init_needed(
-      script_name=request.script_root,
+    g.fanstatic = _FanstaticContext(
+      self, script_name=request.script_root,
       **current_app.config.get('FANSTATIC_OPTIONS', {})
-    ), self)
+    )
+
 
 
 class _FanstaticContext(object):
-  def __init__(self, needed, manager):
-    self._needed = needed
+  def __init__(self, manager, **config):
+    # call this first, to pop some items from the config
+    self._injector = _make_injector(config)
+    self._needed = init_needed(**config)
     self._manager = manager
     self._rendered = False
 
@@ -126,7 +129,28 @@ class _FanstaticContext(object):
   @cached_property
   def _topbottom(self):
     self._rendered = True
-    if self._needed.has_resources():
-      return self._needed.render_topbottom()
-    else:
+    if not self._needed.has_resources():
       return '', ''
+
+    elif self._injector:
+      top, bottom = self._injector.group(self._needed)
+      return top.render(), bottom.render()
+
+    else:
+      return self._needed.render_topbottom()
+
+
+# Fanstatic 1.0 changes the API a bit, so provide compatible implementations:
+
+try:
+  # for 1.0
+
+  from fanstatic.injector import TopBottomInjector
+  def _make_injector(config):
+    return TopBottomInjector(config)
+
+except ImportError:
+  # for Pre-1.0
+
+  def _make_injector(config):
+    return None
