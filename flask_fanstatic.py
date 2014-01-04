@@ -1,4 +1,4 @@
-from fanstatic import (init_needed, Publisher, get_library_registry,
+from fanstatic import (init_needed, del_needed, Publisher, get_library_registry,
                        DEFAULT_SIGNATURE, Resource, Library, Group)
 from flask import Blueprint, g, Markup, current_app, request
 from werkzeug import cached_property
@@ -64,6 +64,8 @@ class _FanstaticManager(object):
     self.publisher = Publisher(get_library_registry())
 
     app.before_request(self.before_request)
+    teardown_request = getattr(app, 'teardown_request', app.after_request)
+    teardown_request(self.teardown_request)
 
     options = app.config.get('FANSTATIC_OPTIONS', {})
     publisher_signature = options.get('publisher_signature', DEFAULT_SIGNATURE)
@@ -99,6 +101,8 @@ class _FanstaticManager(object):
       **current_app.config.get('FANSTATIC_OPTIONS', {})
     )
 
+  def teardown_request(self, *args):
+    del_needed()
 
 
 class _FanstaticContext(object):
